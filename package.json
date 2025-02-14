@@ -9,13 +9,22 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "tracktonic.helloWorld",
-        "title": "Hello World"
+        "title": "Hello World",
+        "properties": {
+          "tracktonic.autoCommitInterval": {
+            "type": "number",
+            "default": 30,
+            "description": "The interval in minutes to commit the data."
+          }
+        }
       }
     ]
   },
