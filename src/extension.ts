@@ -13,18 +13,28 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "tracktonic" is now active!');
-	vscode.window.showInformationMessage('TrackTonic is now active!');
+	vscode.window.showInformationMessage('TrackTonic is now active again and again!!!');
+	
+	
+	vscode.workspace.onDidChangeTextDocument((e) => {
+		console.log("changing doc");
+		const entry = {time: new Date(), activity: e.document.uri.toString()};
+		activityLog.push(entry);
+		console.log('Activity log:', activityLog);
+	});
 
-	const change = vscode.commands.registerCommand('tracktonic.entry', () => {
+	vscode.commands.registerCommand('tracktonic.entry', () => {
+		console.log("now?");
 		vscode.workspace.onDidChangeTextDocument((e) => {
+			console.log("command registered");
 			const entry = {time: new Date(), activity: e.document.uri.toString()};
 			activityLog.push(entry);
 			console.log('Activity log:', activityLog);
 		});
 	});
 	
-	context.subscriptions.push(change);
-	scheduleAutoCommit(context);
+	//context.subscriptions.push(change);
+	//scheduleAutoCommit(context);
 }
 
 function scheduleAutoCommit(context: vscode.ExtensionContext) {
@@ -44,7 +54,7 @@ function autoCommit() {
 	}
 	const workspaceFolder = workspaceFolders[0];
 	const commitmessage = `Auto commit:  ${+ new Date().toLocaleString()}`;
-	const gitCommand = `git add - A && commit -m "${commitmessage}"`;
+	const gitCommand = `git add -A && git commit -m "${commitmessage}"`;
 
 	cp.exec(gitCommand, {cwd: workspaceFolder.uri.fsPath}, (err, stdout, stderr) => {
 		if (err) {
