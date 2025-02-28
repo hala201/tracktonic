@@ -16,13 +16,21 @@
   "contributes": {
     "commands": [
       {
-        "command": "tracktonic.entry",
-        "title": "entry",
-        "properties": {
-          "tracktonic.autoCommitInterval": {
-            "type": "number",
-            "default": 30,
-            "description": "The interval in minutes to commit the data."
+        "command": "tracktonic.start",
+        "title": "start autocommit"
+      },
+      {
+        "command": "tracktonic.stop",
+        "title": "stop autocommit"
+      },
+      {
+        "configuration": {
+          "title": "tracktonic settings",
+          "properties": {
+            "tracktonic.commitInterval": {
+              "type": "number",
+              "default": 300000
+            }
           }
         }
       }
