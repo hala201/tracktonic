@@ -46,6 +46,16 @@ export class GitService {
         this.git = simpleGit(this.repoPath);
     }
 
+    private async authenticateGithub(): Promise<string | undefined> {
+        try {
+            const session = vscode.authentication.getSession('github', ["repo"], { createIfNone: true});
+            return (await session).accessToken;
+        } catch (error) {
+            vscode.window.showErrorMessage("Authentication failed");
+            return undefined;
+        }
+    }
+
     private async ensureTrackTonicRepo() {
         if (!this.repoPath) {
             return;
@@ -80,7 +90,23 @@ export class GitService {
             if (status.files.length > 0) {
                 await this.git.add(".");
                 await this.git.commit("Working on git commit message for later use");
-                await this.git.push();
+
+                const token = await this.authenticateGithub().catch(() => {
+                    vscode.window.showErrorMessage("Cannot push without authentication");
+                    return;
+                });
+                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
+                const remotes = await this.git.getRemotes();
+                if (!remotes.some((remote) => {
+                    return remote.name === "origin";
+                })) {
+                    await this.git.addRemote("origin", remoteURL);
+                    vscode.window.showInformationMessage("Successfully authenticated into repository.")
+                }
+
+                await this.git.push("origin",  "main");
+                vscode.window.showInformationMessage("Changes pushed to tracktonick");
+                console.log("pushed changes to tracktonic");
                 reposCommitted++;
             }
         } catch (error) {
