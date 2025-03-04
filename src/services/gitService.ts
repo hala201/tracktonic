@@ -100,7 +100,7 @@ export class GitService {
                 const remoteURL = `https://${token}@github.com/hala201/tracktonic1.git`;
                 const remotes = await this.git.getRemotes();
                 if (!remotes.some(remote => remote.name === "origin")) {
-                    console.log("tracktonic was node aded before");
+                    console.log("tracktonic was not added before");
                     await this.git.addRemote("origin", remoteURL);
                     vscode.window.showInformationMessage("Successfully authenticated into repository.");
                 } else {
