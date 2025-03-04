@@ -140,7 +140,9 @@ export class GitService {
                 reposCommitted++;
             }
         } catch (error) {
-            vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
+            if (error instanceof Error) {
+                vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
+            }
         }
     
         if (reposCommitted > 0) {
@@ -148,13 +150,7 @@ export class GitService {
         }
         this.changesMade = false; // Reset
     }
-    
-    
-        if (reposCommitted > 0) {
-            vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
-        }
-        this.changesMade = false; // Reset
-    }
+
 
     startAutoCommit(interval: number): void {
         if (this.commitInterval) {
