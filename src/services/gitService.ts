@@ -105,7 +105,7 @@ export class GitService {
                     await this.git.addRemote("origin", remoteURL);
                     vscode.window.showInformationMessage("Successfully authenticated into repository.");
                 } else {
-                    console.log("tracktonic was added before!");
+                    console.log("origin was added before!");
                 }
 
                 await this.git.push("origin",  "main");
