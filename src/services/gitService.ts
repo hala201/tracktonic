@@ -104,7 +104,7 @@ export class GitService {
                 })) {
                     console.log("tracktonic was node aded before");
                     await this.git.addRemote("origin", remoteURL);
-                    vscode.window.showInformationMessage("Successfully authenticated into repository.")
+                    vscode.window.showInformationMessage("Successfully authenticated into repository.");
                 } else {
                     console.log("tracktonic was added before!");
                 }
