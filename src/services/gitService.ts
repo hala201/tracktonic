@@ -95,13 +95,17 @@ export class GitService {
                     vscode.window.showErrorMessage("Cannot push without authentication");
                     return;
                 });
+                console.log(token);
                 const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
                 const remotes = await this.git.getRemotes();
                 if (!remotes.some((remote) => {
                     return remote.name === "origin";
                 })) {
+                    console.log("tracktonic was node aded before");
                     await this.git.addRemote("origin", remoteURL);
                     vscode.window.showInformationMessage("Successfully authenticated into repository.")
+                } else {
+                    console.log("tracktonic was added before!");
                 }
 
                 await this.git.push("origin",  "main");
