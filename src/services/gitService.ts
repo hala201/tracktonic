@@ -97,7 +97,7 @@ export class GitService {
                     return;
                 });
                 console.log(token);
-                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
+                const remoteURL = `https://${token}@github.com/hala201/tracktonic1.git`;
                 const remotes = await this.git.getRemotes();
                 if (!remotes.some((remote) => {
                     return remote.name === "origin";
@@ -151,6 +151,6 @@ export class GitService {
 
     getCommitInterval(): number {
         const config = vscode.workspace.getConfiguration("tracktonic");
-        return config.get<number>("commitInterval", 30000); // Default: 5 minutes
+        return config.get<number>("commitInterval", 15000); // Default: 5 minutes
     }
 }
