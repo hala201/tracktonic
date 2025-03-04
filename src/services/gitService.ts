@@ -86,26 +86,34 @@ export class GitService {
     async handleCommit(): Promise<void> {
         console.log("we are trying to commit now");
         let reposCommitted = 0;
+    
         try {
             const status = await this.git.status();
+    
             if (status.files.length > 0) {
                 await this.git.add(".");
-                await this.git.commit("Working on git commit message for later use");
+                
+                // Ensure at least one commit exists before pushing
+                const logSummary = await this.git.log().catch(() => null);
+                if (!logSummary || logSummary.total === 0) {
+                    console.log("Creating the first commit...");
+                    await this.git.commit("Initial commit for TrackTonic");
+                } else {
+                    await this.git.commit("Automated commit from TrackTonic");
+                }
     
-                const token = await this.authenticateGithub().catch(() => {
+                const token = await this.authenticateGithub();
+                if (!token) {
                     vscode.window.showErrorMessage("Cannot push without authentication");
                     return;
-                });
-                if (!token) return;
+                }
     
                 const remoteURL = `https://${token}@github.com/hala201/myremote.git`;
     
-                // Get remotes with full details
+                // Check if origin remote exists and update if needed
                 const remotes = await this.git.getRemotes(true);
-                remotes.forEach(remote => console.log(`Remote: ${remote.name}, URL: ${remote.refs.push}`));
-    
-                // Check if "origin" exists with the correct URL
                 const originRemote = remotes.find(remote => remote.name === "origin");
+    
                 if (!originRemote) {
                     console.log("Adding remote: origin -> " + remoteURL);
                     await this.git.addRemote("origin", remoteURL);
@@ -118,17 +126,29 @@ export class GitService {
                     console.log("Origin was already correctly set.");
                 }
     
+                // Ensure main branch exists
+                const branches = await this.git.branch();
+                if (!branches.all.includes("main")) {
+                    console.log("Creating main branch...");
+                    await this.git.checkoutLocalBranch("main");
+                }
+    
                 // Push to GitHub
-                await this.git.push("origin", "main");
-                vscode.window.showInformationMessage("Changes pushed to tracktonic.");
-                console.log("Pushed changes to tracktonic.");
+                await this.git.push("origin", "main", ["--set-upstream"]);
+                vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
+                console.log("Pushed changes to TrackTonic.");
                 reposCommitted++;
             }
         } catch (error) {
-            if (error instanceof Error) {
-                vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
-            }
+            vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
         }
+    
+        if (reposCommitted > 0) {
+            vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
+        }
+        this.changesMade = false; // Reset
+    }
+    
     
         if (reposCommitted > 0) {
             vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
