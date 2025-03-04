@@ -146,6 +146,6 @@ export class GitService {
 
     getCommitInterval(): number {
         const config = vscode.workspace.getConfiguration("tracktonic");
-        return config.get<number>("commitInterval", 300000); // Default: 5 minutes
+        return config.get<number>("commitInterval", 30000); // Default: 5 minutes
     }
 }
