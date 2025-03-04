@@ -97,7 +97,7 @@ export class GitService {
                     return;
                 });
                 console.log(token);
-                const remoteURL = `https://${token}@github.com/hala201/tracktonic1.git`;
+                const remoteURL = `https://${token}@github.com/hala201/tracktonic2.git`;
                 const remotes = await this.git.getRemotes();
                 if (!remotes.some(remote => remote.name === "origin")) {
                     console.log("tracktonic was not added before");
