@@ -84,6 +84,7 @@ export class GitService {
     }
 
     async handleCommit() : Promise<void> {
+        console.log("we are trying to commit now");
         let reposCommitted = 0;
         try {
             const status = await this.git.status();
