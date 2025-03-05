@@ -108,7 +108,7 @@ export class GitService {
                     return;
                 }
     
-                const remoteURL = `https://${token}@github.com/hala201/myremote.git`;
+                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
     
                 // Check if the "origin" remote exists and set it correctly
                 const remotes = await this.git.getRemotes(true);
