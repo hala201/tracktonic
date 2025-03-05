@@ -77,6 +77,7 @@ export class GitService {
         try {
             const status = await this.git.status();
             this.changesMade = status.files.length > 0;
+            console.log("checking git status");
         } catch (error) {
             vscode.window.showErrorMessage("Error checking git status.");
         }
@@ -89,7 +90,7 @@ export class GitService {
     
         try {
             const status = await this.git.status();
-    
+            console.log(status.modified);
             if (status.files.length > 0) {
                 await this.git.add(".");
                 
