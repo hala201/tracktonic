@@ -1,0 +1,3 @@
+In this file I test whether changes will get committed to the repo. Take one. 
+Take two. Is that gonna be committed? The logs are fine but i don't see the changes getting pushed.
+Take three. Will it work this time?
