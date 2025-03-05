@@ -2,4 +2,4 @@ In this file I test whether changes will get committed to the repo. Take one.
 Take two. Is that gonna be committed? The logs are fine but i don't see the changes getting pushed.
 Take three. Will it work this time?
 Take four. I wonder if all these changes will make a difference?
-Take five. It is funny how it tunred out that the repo name was wrong in the first place. 
+Take five. It is funny how it tunred out that the repo name was wrong in the first place. I should notice that right away.
