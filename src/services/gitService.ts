@@ -127,39 +127,29 @@ export class GitService {
                     console.log("Origin was already correctly set.");
                 }
     
-                // Ensure "main" branch exists locally and is tracking "origin/main"
+                // Ensure "master" branch exists locally
                 const branches = await this.git.branch();
-                if (!branches.all.includes("main")) {
-                    console.log("Creating and switching to main branch...");
-                    await this.git.checkoutLocalBranch("main");
+                if (!branches.all.includes("master")) {
+                    console.log("Creating and switching to master branch...");
+                    await this.git.checkoutLocalBranch("master");
                 } else {
-                    console.log("Switching to main branch...");
-                    await this.git.checkout("main");
+                    console.log("Switching to master branch...");
+                    await this.git.checkout("master");
                 }
     
-                // Check if "main" is tracking "origin/main"
-                let isTrackingRemote = false;
-                try {
-                    const trackingBranch = await this.git.revparse(["--abbrev-ref", "--symbolic-full-name", "@{u}"]);
-                    if (trackingBranch.trim() === "origin/main") {
-                        isTrackingRemote = true;
-                    }
-                } catch (error) {
-                    console.log("Main is not tracking a remote branch yet.");
+                // Fetch remote branches to check if "origin/master" exists
+                await this.git.fetch();
+                const remoteBranches = await this.git.branch(["-r"]);
+                const remoteMasterExists = remoteBranches.all.includes("origin/master");
+    
+                // If remote "master" doesn't exist, push with "-u" to create and track it
+                if (!remoteMasterExists) {
+                    console.log("Remote 'master' branch does not exist. Pushing with -u...");
+                    await this.git.push("origin", "master", ["-u"]);
+                } else {
+                    console.log("Remote 'master' branch exists. Pushing normally...");
+                    await this.git.push("origin", "master");
                 }
-
-                // Set upstream tracking if needed
-                if (!isTrackingRemote) {
-                    console.log("Setting upstream tracking for main branch...");
-                    await this.git.branch(["--set-upstream-to=origin/main", "main"]);
-                }
-
-                // Push to GitHub (force push as fallback)
-                console.log("Pushing to origin/main...");
-                await this.git.push("origin", "main").catch(async (error) => {
-                    console.error("Push failed, trying force push...");
-                    return this.git.push(["-u", "origin", "main", "--force"]);
-                });
     
                 vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
                 console.log("Pushed changes to TrackTonic.");
@@ -175,7 +165,7 @@ export class GitService {
         if (reposCommitted > 0) {
             vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
         }
-        this.changesMade = false; 
+        this.changesMade = false; // Reset
     }
     
 
