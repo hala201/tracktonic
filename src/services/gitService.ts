@@ -85,16 +85,16 @@ export class GitService {
     }
 
     async handleCommit(): Promise<void> {
-        console.log("we are trying to commit now");
+        console.log("Trying to commit now...");
         let reposCommitted = 0;
     
         try {
             const status = await this.git.status();
-            console.log(status.modified);
+    
             if (status.files.length > 0) {
                 await this.git.add(".");
-                
-                // Ensure at least one commit exists before pushing
+    
+                // Ensure there's at least one commit
                 const logSummary = await this.git.log().catch(() => null);
                 if (!logSummary || logSummary.total === 0) {
                     console.log("Creating the first commit...");
@@ -109,9 +109,9 @@ export class GitService {
                     return;
                 }
     
-                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
+                const remoteURL = `https://${token}@github.com/hala201/myremote.git`;
     
-                // Check if origin remote exists and update if needed
+                // Check if the "origin" remote exists and set it correctly
                 const remotes = await this.git.getRemotes(true);
                 const originRemote = remotes.find(remote => remote.name === "origin");
     
@@ -127,15 +127,40 @@ export class GitService {
                     console.log("Origin was already correctly set.");
                 }
     
-                // Ensure main branch exists
+                // Ensure "main" branch exists locally and is tracking "origin/main"
                 const branches = await this.git.branch();
                 if (!branches.all.includes("main")) {
-                    console.log("Creating main branch...");
+                    console.log("Creating and switching to main branch...");
                     await this.git.checkoutLocalBranch("main");
+                } else {
+                    console.log("Switching to main branch...");
+                    await this.git.checkout("main");
                 }
     
-                // Push to GitHub
-                await this.git.push("origin", "main", ["--set-upstream"]);
+                // Check if "main" is tracking "origin/main"
+                let isTrackingRemote = false;
+                try {
+                    const trackingBranch = await this.git.revparse(["--abbrev-ref", "--symbolic-full-name", "@{u}"]);
+                    if (trackingBranch.trim() === "origin/main") {
+                        isTrackingRemote = true;
+                    }
+                } catch (error) {
+                    console.log("Main is not tracking a remote branch yet.");
+                }
+
+                // Set upstream tracking if needed
+                if (!isTrackingRemote) {
+                    console.log("Setting upstream tracking for main branch...");
+                    await this.git.branch(["--set-upstream-to=origin/main", "main"]);
+                }
+
+                // Push to GitHub (force push as fallback)
+                console.log("Pushing to origin/main...");
+                await this.git.push("origin", "main").catch(async (error) => {
+                    console.error("Push failed, trying force push...");
+                    return this.git.push(["-u", "origin", "main", "--force"]);
+                });
+    
                 vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
                 console.log("Pushed changes to TrackTonic.");
                 reposCommitted++;
@@ -144,13 +169,15 @@ export class GitService {
             if (error instanceof Error) {
                 vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
             }
+            console.error(error);
         }
     
         if (reposCommitted > 0) {
             vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
         }
-        this.changesMade = false; // Reset
+        this.changesMade = false; 
     }
+    
 
 
     startAutoCommit(interval: number): void {
