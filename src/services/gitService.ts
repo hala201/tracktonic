@@ -84,7 +84,7 @@ export class GitService {
     }
 
     async handleCommit(): Promise<void> {
-        console.log("we are trying to commit now");
+        console.log("Trying to commit now...");
         let reposCommitted = 0;
     
         try {
@@ -92,8 +92,8 @@ export class GitService {
     
             if (status.files.length > 0) {
                 await this.git.add(".");
-                
-                // Ensure at least one commit exists before pushing
+    
+                // Ensure there's at least one commit
                 const logSummary = await this.git.log().catch(() => null);
                 if (!logSummary || logSummary.total === 0) {
                     console.log("Creating the first commit...");
@@ -108,9 +108,9 @@ export class GitService {
                     return;
                 }
     
-                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
+                const remoteURL = `https://${token}@github.com/hala201/myremote.git`;
     
-                // Check if origin remote exists and update if needed
+                // Check if the "origin" remote exists and set it correctly
                 const remotes = await this.git.getRemotes(true);
                 const originRemote = remotes.find(remote => remote.name === "origin");
     
@@ -126,15 +126,30 @@ export class GitService {
                     console.log("Origin was already correctly set.");
                 }
     
-                // Ensure main branch exists
+                // Ensure "main" branch exists locally
                 const branches = await this.git.branch();
                 if (!branches.all.includes("main")) {
-                    console.log("Creating main branch...");
+                    console.log("Creating and switching to main branch...");
                     await this.git.checkoutLocalBranch("main");
+                } else {
+                    console.log("Switching to main branch...");
+                    await this.git.checkout("main");
                 }
     
-                // Push to GitHub
-                await this.git.push("origin", "main", ["--set-upstream"]);
+                // Fetch remote branches to check if "origin/main" exists
+                await this.git.fetch();
+                const remoteBranches = await this.git.branch(["-r"]);
+                const remoteMainExists = remoteBranches.all.includes("origin/main");
+    
+                // If remote "main" doesn't exist, push with "-u" to create and track it
+                if (!remoteMainExists) {
+                    console.log("Remote 'main' branch does not exist. Pushing with -u...");
+                    await this.git.push("origin", "main", ["-u"]);
+                } else {
+                    console.log("Remote 'main' branch exists. Pushing normally...");
+                    await this.git.push("origin", "main");
+                }
+    
                 vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
                 console.log("Pushed changes to TrackTonic.");
                 reposCommitted++;
@@ -143,6 +158,7 @@ export class GitService {
             if (error instanceof Error) {
                 vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
             }
+            console.error(error);
         }
     
         if (reposCommitted > 0) {
@@ -150,6 +166,7 @@ export class GitService {
         }
         this.changesMade = false; // Reset
     }
+    
 
 
     startAutoCommit(interval: number): void {
