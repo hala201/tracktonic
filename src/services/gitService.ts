@@ -187,7 +187,7 @@ export class GitService {
     private async checkIfRepoExists(username: string, repoName: string, token: string) {
         try {
             const repo = await axios.get(`https://api.github.com/repos/${username}/${repoName}`, 
-                {headers : {Authorization : `token : ${token}`}}
+                {headers : {Authorization : `token ${token}`}}
             );
             console.log(repo.status);
             return repo.status === 200;
@@ -207,7 +207,7 @@ export class GitService {
                 name: repoName,
                 private: false
             }, {
-                headers: {Authorization: `token : ${token}`}
+                headers: {Authorization: `token ${token}`}
             });
             if (newRepo.status === 201) {
                 vscode.window.showInformationMessage(`Repository ${repoName} was created successfully`);
