@@ -203,7 +203,7 @@ export class GitService {
 
     private async createGithubRepo(username: string, repoName: string, token: string) {
         try {
-            const newRepo = await axios.post(`https://api.github.com/${username}/repos`, {
+            const newRepo = await axios.post(`https://api.github.com/repos/${username}`, {
                 name: repoName,
                 private: false
             }, {
