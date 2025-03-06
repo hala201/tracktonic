@@ -6,3 +6,4 @@ Take six. Will it create a new repo?
 Take seven. Will it face a problem now with the longer wait time?
 Just checking to see if it will find my repo still. Take eight.
 So things are committed any way even if the github repo is not found. Take nine.
+Changing the url of the get request should really make a difference. Take ten.

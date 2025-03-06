@@ -186,7 +186,7 @@ export class GitService {
     
     private async checkIfRepoExists(username: string, repoName: string, token: string) {
         try {
-            const repo = await axios.get(`https://api.github.com/${username}/${repoName}`, 
+            const repo = await axios.get(`https://api.github.com/repos/${username}/${repoName}`, 
                 {headers : {Authorization : `token : ${token}`}}
             );
             console.log(repo.status);
