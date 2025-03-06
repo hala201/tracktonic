@@ -110,7 +110,7 @@ export class GitService {
                     return;
                 }
                 const githubUsername = "hala201";  // Replace with dynamic username if needed
-                const repoName = "tracktonic";
+                const repoName = "myremote";
                 const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
 
                 //  Check if the repository exists on GitHub

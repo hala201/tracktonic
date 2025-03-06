@@ -8,3 +8,4 @@ Just checking to see if it will find my repo still. Take eight.
 So things are committed any way even if the github repo is not found. Take nine.
 Changing the url of the get request should really make a difference. Take ten.
 Let us see if we are still unauthorized to access the repo checking. Take eleven.
+Take twelve. Will it now create a myremote repo? I am quite curious. 
