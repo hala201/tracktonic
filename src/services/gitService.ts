@@ -110,8 +110,8 @@ export class GitService {
                     return;
                 }
                 const githubUsername = "hala201";  // Replace with dynamic username if needed
-            const repoName = "tracktonic";
-            const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
+                const repoName = "tracktonic";
+                const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
 
                 //  Check if the repository exists on GitHub
                 const repoExists = await this.checkIfRepoExists(githubUsername, repoName, token);
@@ -189,12 +189,14 @@ export class GitService {
             const repo = await axios.get(`https://api.github.com/${username}/${repoName}`, 
                 {headers : {Authorization : `token : ${token}`}}
             );
+            console.log(repo.status);
             return repo.status === 200;
         } catch (error: any) {
             if (error.response?.status === 404) {
+                console.log(404);
                 return false;
             }
-            vscode.window.showErrorMessage(`Error checking if repo exists.`);
+            vscode.window.showErrorMessage(`Error checking if repo exists ${error.message}.`);
             return false;
         }
     }
