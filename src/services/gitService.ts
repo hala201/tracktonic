@@ -3,6 +3,7 @@ import simpleGit, { SimpleGit } from "simple-git";
 import * as path from "path";
 import * as fs from "fs";
 import { get } from "http";
+import axios from "axios";
 
 async function getTrackTonicRepoPath(): Promise<string | undefined> {
     const folders = vscode.workspace.workspaceFolders;
@@ -108,8 +109,23 @@ export class GitService {
                     vscode.window.showErrorMessage("Cannot push without authentication");
                     return;
                 }
-    
-                const remoteURL = `https://${token}@github.com/hala201/tracktonic.git`;
+                const githubUsername = "hala201";  // Replace with dynamic username if needed
+            const repoName = "myremote";
+            const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
+
+                //  Check if the repository exists on GitHub
+                const repoExists = await this.checkIfRepoExists(githubUsername, repoName, token);
+                if (!repoExists) {
+                    console.log("Repository does not exist. Creating it now...");
+                    const created = await this.createGithubRepo(githubUsername, repoName, token);
+                    if (!created) {
+                        vscode.window.showErrorMessage("Failed to create GitHub repository.");
+                        return;
+                    }
+                } else {
+                    console.log("Repository exists. Proceeding...");
+                }
+                    
     
                 // Check if the "origin" remote exists and set it correctly
                 const remotes = await this.git.getRemotes(true);
@@ -168,7 +184,38 @@ export class GitService {
         this.changesMade = false; // Reset
     }
     
+    private async checkIfRepoExists(username: string, repoName: string, token: string) {
+        try {
+            const repo = await axios.get(`https://api.github.com/${username}/${repoName}`, 
+                {headers : {Authorization : `token : ${token}`}}
+            );
+            return repo.status === 200;
+        } catch (error: any) {
+            if (error.response?.status === 404) {
+                return false;
+            }
+            vscode.window.showErrorMessage(`Error checking if repo exists.`);
+            return false;
+        }
+    }
 
+    private async createGithubRepo(username: string, repoName: string, token: string) {
+        try {
+            const newRepo = await axios.post(`https://api.github.com/${username}/repos`, {
+                name: repoName,
+                private: false
+            }, {
+                headers: {Authorization: `token : ${token}`}
+            });
+            if (newRepo.status === 201) {
+                vscode.window.showInformationMessage(`Repository ${repoName} was created successfully`);
+                return true;
+            } 
+        } catch (error) {
+            vscode.window.showErrorMessage(`An error occured while creating repository.`);
+            return false;
+        }
+    }
 
     startAutoCommit(interval: number): void {
         if (this.commitInterval) {
