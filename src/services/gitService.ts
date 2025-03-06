@@ -110,14 +110,14 @@ export class GitService {
                     return;
                 }
                 const githubUsername = "hala201";  // Replace with dynamic username if needed
-                const repoName = "myremote";
+                const repoName = "tracktonic";
                 const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
 
                 //  Check if the repository exists on GitHub
                 const repoExists = await this.checkIfRepoExists(githubUsername, repoName, token);
                 if (!repoExists) {
                     console.log("Repository does not exist. Creating it now...");
-                    const created = await this.createGithubRepo(githubUsername, repoName, token);
+                    const created = await this.createGithubRepo(repoName, token);
                     if (!created) {
                         vscode.window.showErrorMessage("Failed to create GitHub repository.");
                         return;
@@ -201,7 +201,7 @@ export class GitService {
         }
     }
 
-    private async createGithubRepo(username: string, repoName: string, token: string) {
+    private async createGithubRepo(repoName: string, token: string) {
         try {
             const newRepo = await axios.post(`https://api.github.com/user/repos`, {
                 name: repoName,
