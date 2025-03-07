@@ -3,9 +3,9 @@
 import * as vscode from 'vscode';
 import { GitService } from './services/gitService';
 
-const gitService = new GitService();
 
 export function activate(context: vscode.ExtensionContext) {
+	const gitService = new GitService(context);
 	
 	const startCommand = vscode.commands.registerCommand("tracktonic.start", () => {
 		const intervalMs = gitService.getCommitInterval();

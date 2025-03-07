@@ -32,8 +32,10 @@ export class GitService {
     private git : SimpleGit;
     private commitInterval: NodeJS.Timeout | undefined;
     private changesMade: boolean = false;
+    private context: vscode.ExtensionContext;
 
-    constructor() {
+    constructor(context : vscode.ExtensionContext) {
+        this.context = context;
         this.initialize();
     }
     
@@ -85,6 +87,25 @@ export class GitService {
         return this.changesMade;
     }
 
+    async getGitHubUserName(): Promise <string | undefined> {
+        const secretStorage = this.context.secrets;
+        let username = await secretStorage.get("gitHubUserName");
+
+        if (!username) {
+            username = await vscode.window.showInputBox({
+                prompt : "Please enter your github username: ",
+                placeHolder: "GitHub Username",
+                ignoreFocusOut: true,
+                validateInput: (input) => input.trim() === ""? "Username Cannot Be Empty" : null
+            });
+            
+            if (username) {
+                await secretStorage.store("gitHubUserName", username);
+            }
+        } 
+        return username;
+    }
+
     async handleCommit(): Promise<void> {
         console.log("Trying to commit now...");
         let reposCommitted = 0;
@@ -109,7 +130,7 @@ export class GitService {
                     vscode.window.showErrorMessage("Cannot push without authentication");
                     return;
                 }
-                const githubUsername = "hala201";  // Replace with dynamic username if needed
+                const githubUsername = await this.getGitHubUserName();
                 const repoName = "tracktonic";
                 const remoteURL = `https://${token}@github.com/${githubUsername}/${repoName}.git`;
 
@@ -184,7 +205,7 @@ export class GitService {
         this.changesMade = false; // Reset
     }
     
-    private async checkIfRepoExists(username: string, repoName: string, token: string) {
+    private async checkIfRepoExists(username: string | undefined, repoName: string, token: string) {
         try {
             const repo = await axios.get(`https://api.github.com/repos/${username}/${repoName}`, 
                 {headers : {Authorization : `token ${token}`}}
