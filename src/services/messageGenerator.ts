@@ -1,4 +1,4 @@
-import vscode, { ExtensionContext } from "vscode";
+import vscode, { Extension, ExtensionContext } from "vscode";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { error } from "console";
 
@@ -38,4 +38,25 @@ async function initializeGenAI(context: ExtensionContext) : Promise<GoogleGenera
         }
         return undefined;
     }
+}
+
+export async function getAutomatedCommitMessage(context : ExtensionContext, codeChange: string) : Promise <string>{
+    const genAI = await initializeGenAI(context);
+    const genericCommitMessage = "Autocommit from tracktonic";
+    if (!genAI) {
+        return genericCommitMessage;
+    }
+    try {
+        const model = genAI.getGenerativeModel({
+                model : "gemini-1.5-flas-8b"
+        });
+        const prompt = `Generate a concise commit message from the following file changes:\n\n ${codeChange}`;
+        const response = await model.generateContent(prompt);
+        const commitMessage = response?.response?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
+        return commitMessage || genericCommitMessage;
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error generating commit message: ${error}`);
+        return genericCommitMessage;
+    }
+
 }
