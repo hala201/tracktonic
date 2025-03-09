@@ -16,10 +16,7 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "tsc: build",
-			"env": {
-				"GEMINI_API_KEY": ""
-			}
+			"preLaunchTask": "tsc: build"
 		}
 	]
 }
