@@ -16,3 +16,4 @@ Take thirteen. Now that it is possible to set tracktonic repo upstream.
 I should be prompted to enter the username right away not when the autocommit schedule hits. 
 I will probably not be prompted again becasue it already exists in the context. 
 This will not count as part of the commit message, i just want to see the logs. take 
+Take eighteen, does this model exist? gemini-1.5-flash? 

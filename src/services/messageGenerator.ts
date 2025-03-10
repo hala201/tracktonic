@@ -48,7 +48,7 @@ export async function getAutomatedCommitMessage(context : ExtensionContext, code
     }
     try {
         const model = genAI.getGenerativeModel({
-                model : "gemini-1.5-flas-8b"
+                model : "gemini-1.5-flash"
         });
         const prompt = `Generate a concise commit message from the following file changes:\n\n ${codeChange}`;
         const response = await model.generateContent(prompt);
