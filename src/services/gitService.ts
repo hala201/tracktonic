@@ -4,6 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { get } from "http";
 import axios from "axios";
+import { getAutomatedCommitMessage } from './messageGenerator';
 
 async function getTrackTonicRepoPath(): Promise<string | undefined> {
     const folders = vscode.workspace.workspaceFolders;
@@ -122,7 +123,9 @@ export class GitService {
                     console.log("Creating the first commit...");
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
-                    await this.git.commit("Automated commit from TrackTonic");
+                    const codeChanges = status.modified.map((file) => console.log(file));
+                    const message = await getAutomatedCommitMessage(this.context, "");
+                    await this.git.commit(message);
                 }
     
                 const token = await this.authenticateGithub();
