@@ -40,6 +40,17 @@ async function initializeGenAI(context: ExtensionContext) : Promise<GoogleGenera
     }
 }
 
+function sanitizeCodeChanges(code: string): string {
+    return code
+        .replace(/(?<=API_KEY\s*=\s*['"])[^'"]+/gi, "[REDACTED]") // API keys
+        .replace(/(?<=password\s*=\s*['"])[^'"]+/gi, "[REDACTED]") // Passwords
+        .replace(/(?<=secret\s*=\s*['"])[^'"]+/gi, "[REDACTED]"); // Other secrets
+}
+
+function limitCodeSize(code: string, maxLength = 20000): string {
+    return code.length > maxLength ? code.substring(0, maxLength) + "\n...[truncated]..." : code;
+}
+
 export async function getAutomatedCommitMessage(context : ExtensionContext, codeChange: string) : Promise <string>{
     const genAI = await initializeGenAI(context);
     const genericCommitMessage = "Autocommit from tracktonic";
@@ -50,7 +61,9 @@ export async function getAutomatedCommitMessage(context : ExtensionContext, code
         const model = genAI.getGenerativeModel({
                 model : "gemini-1.5-flash"
         });
-        const prompt = `Generate a concise commit message from the following file changes:\n\n ${codeChange}`;
+        const prompt = `Generate a concise commit message from the following file changes:\n\n ${
+            limitCodeSize(sanitizeCodeChanges(codeChange))
+        }`;
         const response = await model.generateContent(prompt);
         const commitMessage = response?.response?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
         return commitMessage || genericCommitMessage;

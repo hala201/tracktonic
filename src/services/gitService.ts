@@ -123,8 +123,7 @@ export class GitService {
                     console.log("Creating the first commit...");
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
-                    const codeChanges = status.modified.map((file) => console.log(`Here are the file changes ${file}`));
-                    console.log(`here are the diffs ${await this.git.diff([`--cached`])}`);
+                    const codeChanges = await this.git.diff(["--cached"]);
                     const message = await getAutomatedCommitMessage(this.context, "");
                     await this.git.commit(message);
                 }

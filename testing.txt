@@ -18,3 +18,4 @@ I will probably not be prompted again becasue it already exists in the context.
 This will not count as part of the commit message, i just want to see the logs. take 
 Take eighteen, does this model exist? gemini-1.5-flash? 
 take nineteen, will there be anything worth mention in the commit messge?
+take twenty, will the text content be revealed here?
