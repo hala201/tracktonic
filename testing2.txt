@@ -1,0 +1,1 @@
+I am testing whether the commit message ai generator will understand what this file is for. 
