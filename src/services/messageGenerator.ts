@@ -52,6 +52,7 @@ function limitCodeSize(code: string, maxLength = 20000): string {
 }
 
 export async function getAutomatedCommitMessage(context : ExtensionContext, codeChange: string) : Promise <string>{
+    console.log(codeChange);
     const genAI = await initializeGenAI(context);
     const genericCommitMessage = "Autocommit from tracktonic";
     if (!genAI) {

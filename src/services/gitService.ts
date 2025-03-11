@@ -124,7 +124,7 @@ export class GitService {
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
                     const codeChanges = await this.git.diff(["--cached"]);
-                    const message = await getAutomatedCommitMessage(this.context, "");
+                    const message = await getAutomatedCommitMessage(this.context, codeChanges);
                     await this.git.commit(message);
                 }
     

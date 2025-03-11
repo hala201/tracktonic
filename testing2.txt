@@ -1,1 +1,2 @@
 I am testing whether the commit message ai generator will understand what this file is for. 
+This file is for testing purposes for the auto generator of commit messages, 
