@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import simpleGit, { SimpleGit } from "simple-git";
 import * as path from "path";
 import * as fs from "fs";
-import { get } from "http";
 import axios from "axios";
 import { getAutomatedCommitMessage } from './messageGenerator';
 
