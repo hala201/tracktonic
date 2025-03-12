@@ -1,66 +1,68 @@
 {
-  "name": "tracktonic",
-  "displayName": "TrackTonic",
-  "description": "vscode productivity monitor",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.97.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "tracktonic.start",
-        "title": "start autocommit",
-        "properties": {
-            "tracktonic.commitInterval": {
-              "type": "number",
-              "default": 300000
+    "name": "tracktonic",
+    "displayName": "TrackTonic",
+    "description": "vscode productivity monitor",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.97.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "tracktonic.start",
+                "title": "start autocommit",
+                "properties": {
+                    "tracktonic.commitInterval": {
+                        "type": "number",
+                        "default": 300000
+                    }
+                }
+            },
+            {
+                "command": "tracktonic.stop",
+                "title": "stop autocommit"
             }
-          }
-      },
-      {
-        "command": "tracktonic.stop",
-        "title": "stop autocommit"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^22.13.5",
-    "@types/vscode": "^1.97.0",
-    "@typescript-eslint/eslint-plugin": "^8.22.0",
-    "@typescript-eslint/parser": "^8.22.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "esbuild": "^0.24.2",
-    "eslint": "^9.19.0",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.7.3"
-  },
-  "dependencies": {
-    "@google/generative-ai": "^0.24.0",
-    "axios": "^1.8.1",
-    "simple-git": "^3.27.0"
-  }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "npm run check-types && npm run lint && node esbuild.js",
+        "watch": "npm-run-all -p watch:*",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "npm run check-types && npm run lint && node esbuild.js --production",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "check-types": "tsc --noEmit",
+        "lint": "eslint src",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^22.13.5",
+        "@types/sinon": "^17.0.4",
+        "@types/vscode": "^1.97.0",
+        "@typescript-eslint/eslint-plugin": "^8.22.0",
+        "@typescript-eslint/parser": "^8.22.0",
+        "@vscode/test-cli": "^0.0.10",
+        "@vscode/test-electron": "^2.4.1",
+        "esbuild": "^0.24.2",
+        "eslint": "^9.19.0",
+        "npm-run-all": "^4.1.5",
+        "typescript": "^5.7.3"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.24.0",
+        "axios": "^1.8.1",
+        "simple-git": "^3.27.0",
+        "sinon": "^19.0.2"
+    }
 }
