@@ -17,22 +17,17 @@
     "commands": [
       {
         "command": "tracktonic.start",
-        "title": "start autocommit"
-      },
-      {
-        "command": "tracktonic.stop",
-        "title": "stop autocommit"
-      },
-      {
-        "configuration": {
-          "title": "tracktonic settings",
-          "properties": {
+        "title": "start autocommit",
+        "properties": {
             "tracktonic.commitInterval": {
               "type": "number",
               "default": 300000
             }
           }
-        }
+      },
+      {
+        "command": "tracktonic.stop",
+        "title": "stop autocommit"
       }
     ]
   },
