@@ -2,6 +2,8 @@ import vscode, { Extension, ExtensionContext } from "vscode";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { error } from "console";
 
+const PROMPT = "Analyze the following modified code and generate a concise and meaningful commit message. The commit message should summarize the key changes made, including bug fixes, feature additions, refactoring, or performance improvements. Follow conventional commit guidelines where possible. Avoid vague descriptions. If applicable, mention affected functions, modules, or classes. Keep the message clear, professional, and useful for future developers reviewing the commit history.";
+
 async function getGoogleAPIKey(context : ExtensionContext) : Promise<string | undefined> {
     const secrets = context.secrets;
     let genaiAPIKey = await secrets.get("genaiapikey");
@@ -62,7 +64,7 @@ export async function getAutomatedCommitMessage(context : ExtensionContext, code
         const model = genAI.getGenerativeModel({
                 model : "gemini-1.5-flash"
         });
-        const prompt = `Generate a concise commit message from the following file changes:\n\n ${
+        const prompt = `${PROMPT}\n\n ${
             limitCodeSize(sanitizeCodeChanges(codeChange))
         }`;
         const response = await model.generateContent(prompt);
