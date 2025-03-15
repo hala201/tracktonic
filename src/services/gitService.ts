@@ -8,11 +8,14 @@ import { getAutomatedCommitMessage } from './messageGenerator';
 async function getTrackTonicRepoPath(): Promise<string | undefined> {
     const folders = vscode.workspace.workspaceFolders;
     if (!folders || folders.length === 0) {
+        console.log("no folders defined!!");
         vscode.window.showErrorMessage("No open directories");
         return undefined;
     } else if (folders.length === 1) {
+        console.log("there is a correct folder");
         return path.join(folders[0].uri.fsPath, "tracktonic");
     } else {
+        console.log("user needs to pick");
         const pick : string | undefined = await vscode.window.showQuickPick(
             folders.map((folder) => folder.uri.fsPath),
             {placeHolder: "Select a folder tot store the TrackTonic repository"}
@@ -79,13 +82,16 @@ export class GitService {
         this.changesMade = false;
         try {
             const status = await this.git.status();
+            console.log("DEBUG: Git status output:", status);
+    
             this.changesMade = status.files.length > 0;
-            console.log("checking git status");
+            console.log("DEBUG: checkGitStatus() -> this.changesMade:", this.changesMade);
         } catch (error) {
             vscode.window.showErrorMessage("Error checking git status.");
         }
         return this.changesMade;
     }
+    
 
     async getGitHubUserName(): Promise <string | undefined> {
         const secretStorage = this.context.secrets;
@@ -112,8 +118,9 @@ export class GitService {
     
         try {
             const status = await this.git.status();
-    
+            console.log("real status", status);
             if (status.files.length > 0) {
+                console.log("status changed");
                 await this.git.add(".");
     
                 // Ensure there's at least one commit
@@ -193,6 +200,8 @@ export class GitService {
                 vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
                 console.log("Pushed changes to TrackTonic.");
                 reposCommitted++;
+            } else {
+                console.log("Nothing to commit");
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -207,7 +216,7 @@ export class GitService {
         this.changesMade = false; // Reset
     }
     
-    private async checkIfRepoExists(username: string | undefined, repoName: string, token: string) {
+    async checkIfRepoExists(username: string | undefined, repoName: string, token: string) {
         try {
             const repo = await axios.get(`https://api.github.com/repos/${username}/${repoName}`, 
                 {headers : {Authorization : `token ${token}`}}
@@ -224,7 +233,7 @@ export class GitService {
         }
     }
 
-    private async createGithubRepo(repoName: string, token: string) {
+    async createGithubRepo(repoName: string, token: string) {
         try {
             const newRepo = await axios.post(`https://api.github.com/user/repos`, {
                 name: repoName,

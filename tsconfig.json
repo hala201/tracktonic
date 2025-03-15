@@ -10,6 +10,7 @@
 	  "esModuleInterop": true,
 	  "forceConsistentCasingInFileNames": true,
 	  "skipLibCheck": true,
-	  "strictPropertyInitialization": false
+	  "strictPropertyInitialization": false,
+	  "types": ["mocha", "node"],
 	}
   }
