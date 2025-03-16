@@ -130,7 +130,12 @@ export class GitService {
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
                     const codeChanges = await this.git.diff(["--cached"]);
-                    const message = await getAutomatedCommitMessage(this.context, codeChanges);
+                    console.log("DEBUG: this.context in handleCommit:", this.context);
+                    const message = await getAutomatedCommitMessage(this.context, codeChanges).catch((error) =>  {
+                        console.log(error);
+                        return "Fallback Commit Message";
+                    });
+                    console.log(message);
                     await this.git.commit(message);
                 }
     
