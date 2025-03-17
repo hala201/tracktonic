@@ -21,5 +21,13 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-	
+	vscode.commands.getCommands(true).then((commands) => {
+        commands.forEach((command) => {
+            if (command.startsWith("tracktonic.")) {
+                vscode.commands.executeCommand(command).then(() => {
+                    console.log(`Deactivated command: ${command}`);
+                });
+            }
+        });
+    });
 }
