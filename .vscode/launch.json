@@ -11,8 +11,7 @@
 			"request": "launch",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--no-deprecation",
-				"--extensionTestsPath=${workspaceFolder}/out/test"
+				"--no-deprecation"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
