@@ -204,11 +204,7 @@ export class GitService {
             }
             console.error(error);
         }
-    
-        if (reposCommitted > 0) {
-            vscode.window.showInformationMessage(`Auto-committed changes to ${reposCommitted} repos`);
-        }
-        this.changesMade = false; // Reset
+        this.changesMade = false; 
     }
     
     async checkIfRepoExists(username: string | undefined, repoName: string, token: string) {
