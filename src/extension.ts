@@ -5,19 +5,16 @@ import { GitService } from './services/gitService';
 
 
 export function activate(context: vscode.ExtensionContext) {
-	const gitService = new GitService(context);
-	
-	const startCommand = vscode.commands.registerCommand("tracktonic.start", () => {
-		const intervalMs = gitService.getCommitInterval();
-		gitService.startAutoCommit(intervalMs);
+	console.log("TrackTonic extension activated, starting auto-commit...");
+    const gitService = new GitService(context);
+    const intervalMs = gitService.getCommitInterval();
+    gitService.startAutoCommit(intervalMs);
 
-		const stopCommand = vscode.commands.registerCommand("tracktonic.stop", () => {
-			gitService.stopAutoCommit();
-		});
+    const stopCommand = vscode.commands.registerCommand("tracktonic.stop", () => {
+        gitService.stopAutoCommit();
+    });
 
-		context.subscriptions.push(startCommand, stopCommand);
-	});
-	
+    context.subscriptions.push(stopCommand);
 }
 
 export function deactivate() {

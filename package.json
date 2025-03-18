@@ -17,19 +17,24 @@
         "commands": [
             {
                 "command": "tracktonic.start",
-                "title": "start autocommit",
-                "properties": {
-                    "tracktonic.commitInterval": {
-                        "type": "number",
-                        "default": 300000
-                    }
-                }
+                "title": "start autocommit"
             },
             {
                 "command": "tracktonic.stop",
                 "title": "stop autocommit"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "tracktonic",
+            "properties": {
+                "tracktonic.commitInterval": {
+                    "type": "number",
+                    "default": 1800000,
+                    "minimum": 30000,
+                    "description": "Interval (in milliseconds) between automatic commits. Default is 30 minutes (1,800,000 ms)."
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

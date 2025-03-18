@@ -130,7 +130,6 @@ export class GitService {
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
                     const codeChanges = await this.git.diff(["--cached"]);
-                    console.log("DEBUG: this.context in handleCommit:", this.context);
                     const message = await getAutomatedCommitMessage(this.context, codeChanges).catch((error) =>  {
                         console.log(error);
                         return "Fallback Commit Message";
@@ -269,7 +268,7 @@ export class GitService {
                 await this.handleCommit();
             }
         }, interval);
-        vscode.window.showInformationMessage(`Auto-commits started every ${interval / 1000}`);
+        vscode.window.showInformationMessage(`Auto-commits started every ${interval / 60000} minutes`);
     }
 
     stopAutoCommit(): void {
@@ -283,6 +282,7 @@ export class GitService {
 
     getCommitInterval(): number {
         const config = vscode.workspace.getConfiguration("tracktonic");
-        return config.get<number>("commitInterval", 30000); // Default: 5 minutes
+        console.log(config.get<number>("commitInterval"));
+        return config.get<number>("commitInterval", 1800000);
     }
 }
