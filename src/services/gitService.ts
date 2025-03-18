@@ -5,17 +5,16 @@ import * as fs from "fs";
 import axios from "axios";
 import { getAutomatedCommitMessage } from './messageGenerator';
 
+const outputChannel = vscode.window.createOutputChannel("TrackTonic");
+
 async function getTrackTonicRepoPath(): Promise<string | undefined> {
     const folders = vscode.workspace.workspaceFolders;
     if (!folders || folders.length === 0) {
-        console.log("no folders defined!!");
         vscode.window.showErrorMessage("No open directories");
         return undefined;
     } else if (folders.length === 1) {
-        console.log("there is a correct folder");
         return path.join(folders[0].uri.fsPath, "tracktonic");
     } else {
-        console.log("user needs to pick");
         const pick : string | undefined = await vscode.window.showQuickPick(
             folders.map((folder) => folder.uri.fsPath),
             {placeHolder: "Select a folder tot store the TrackTonic repository"}
@@ -82,10 +81,8 @@ export class GitService {
         this.changesMade = false;
         try {
             const status = await this.git.status();
-            console.log("DEBUG: Git status output:", status);
     
             this.changesMade = status.files.length > 0;
-            console.log("DEBUG: checkGitStatus() -> this.changesMade:", this.changesMade);
         } catch (error) {
             vscode.window.showErrorMessage("Error checking git status.");
         }
@@ -113,28 +110,25 @@ export class GitService {
     }
 
     async handleCommit(): Promise<void> {
-        console.log("Trying to commit now...");
+        outputChannel.appendLine("Handling commit");
         let reposCommitted = 0;
     
         try {
             const status = await this.git.status();
-            console.log("real status", status);
+            outputChannel.appendLine(`Git status: ${status}`);
             if (status.files.length > 0) {
-                console.log("status changed");
                 await this.git.add(".");
     
-                // Ensure there's at least one commit
                 const logSummary = await this.git.log().catch(() => null);
                 if (!logSummary || logSummary.total === 0) {
-                    console.log("Creating the first commit...");
+                    outputChannel.appendLine("Creating the first commit.");
                     await this.git.commit("Initial commit for TrackTonic");
                 } else {
                     const codeChanges = await this.git.diff(["--cached"]);
                     const message = await getAutomatedCommitMessage(this.context, codeChanges).catch((error) =>  {
-                        console.log(error);
+                        outputChannel.appendLine(error);
                         return "Fallback Commit Message";
                     });
-                    console.log(message);
                     await this.git.commit(message);
                 }
     
@@ -150,14 +144,14 @@ export class GitService {
                 //  Check if the repository exists on GitHub
                 const repoExists = await this.checkIfRepoExists(githubUsername, repoName, token);
                 if (!repoExists) {
-                    console.log("Repository does not exist. Creating it now...");
+                    outputChannel.appendLine("Repository does not exist. Creating it now...");
                     const created = await this.createGithubRepo(repoName, token);
                     if (!created) {
                         vscode.window.showErrorMessage("Failed to create GitHub repository.");
                         return;
                     }
                 } else {
-                    console.log("Repository exists. Proceeding...");
+                    outputChannel.appendLine("Repository exists. Proceeding...");
                 }
                     
     
@@ -166,24 +160,24 @@ export class GitService {
                 const originRemote = remotes.find(remote => remote.name === "origin");
     
                 if (!originRemote) {
-                    console.log("Adding remote: origin -> " + remoteURL);
+                    outputChannel.appendLine("Adding remote: origin -> " + remoteURL);
                     await this.git.addRemote("origin", remoteURL);
                     vscode.window.showInformationMessage("Successfully authenticated into repository.");
                 } else if (originRemote.refs.push !== remoteURL) {
-                    console.log("Origin exists but URL is different. Updating...");
+                    outputChannel.appendLine("Origin exists but URL is different. Updating...");
                     await this.git.removeRemote("origin");
                     await this.git.addRemote("origin", remoteURL);
                 } else {
-                    console.log("Origin was already correctly set.");
+                    outputChannel.appendLine("Origin was already correctly set.");
                 }
     
                 // Ensure "master" branch exists locally
                 const branches = await this.git.branch();
                 if (!branches.all.includes("master")) {
-                    console.log("Creating and switching to master branch...");
+                    outputChannel.appendLine("Creating and switching to master branch...");
                     await this.git.checkoutLocalBranch("master");
                 } else {
-                    console.log("Switching to master branch...");
+                    outputChannel.appendLine("Switching to master branch...");
                     await this.git.checkout("master");
                 }
     
@@ -194,19 +188,16 @@ export class GitService {
     
                 // If remote "master" doesn't exist, push with "-u" to create and track it
                 if (!remoteMasterExists) {
-                    console.log("Remote 'master' branch does not exist. Pushing with -u...");
+                    outputChannel.appendLine("Remote 'master' branch does not exist. Pushing with -u...");
                     await this.git.push("origin", "master", ["-u"]);
                 } else {
-                    console.log("Remote 'master' branch exists. Pushing normally...");
+                    outputChannel.appendLine("Remote 'master' branch exists. Pushing normally...");
                     await this.git.push("origin", "master");
                 }
     
                 vscode.window.showInformationMessage("Changes pushed to TrackTonic.");
-                console.log("Pushed changes to TrackTonic.");
                 reposCommitted++;
-            } else {
-                console.log("Nothing to commit");
-            }
+            } 
         } catch (error) {
             if (error instanceof Error) {
                 vscode.window.showErrorMessage(`Git commit failed: ${error.message}`);
@@ -225,11 +216,10 @@ export class GitService {
             const repo = await axios.get(`https://api.github.com/repos/${username}/${repoName}`, 
                 {headers : {Authorization : `token ${token}`}}
             );
-            console.log(repo.status);
+            outputChannel.appendLine(`Repo status: ${repo.status}`);
             return repo.status === 200;
         } catch (error: any) {
             if (error.response?.status === 404) {
-                console.log(404);
                 return false;
             }
             vscode.window.showErrorMessage(`Error checking if repo exists ${error.message}.`);
@@ -282,7 +272,6 @@ export class GitService {
 
     getCommitInterval(): number {
         const config = vscode.workspace.getConfiguration("tracktonic");
-        console.log(config.get<number>("commitInterval"));
         return config.get<number>("commitInterval", 1800000);
     }
 }

@@ -1,6 +1,5 @@
-import vscode, { Extension, ExtensionContext } from "vscode";
+import vscode, { ExtensionContext } from "vscode";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { error } from "console";
 
 const PROMPT = "Analyze the following modified code and generate a concise and meaningful commit message. The commit message should summarize the key changes made, including bug fixes, feature additions, refactoring, or performance improvements. Follow conventional commit guidelines where possible. Avoid vague descriptions. If applicable, mention affected functions, modules, or classes. Keep the message clear, professional, and useful for future developers reviewing the commit history.";
 
@@ -54,7 +53,6 @@ function limitCodeSize(code: string, maxLength = 20000): string {
 }
 
 export async function getAutomatedCommitMessage(context : ExtensionContext, codeChange: string) : Promise <string>{
-    console.log(codeChange);
     const genAI = await initializeGenAI(context);
     const genericCommitMessage = "Autocommit from tracktonic";
     if (!genAI) {

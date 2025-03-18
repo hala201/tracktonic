@@ -2,7 +2,6 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { GitService } from '../services/gitService';
 import * as sinon from 'sinon';
-import simpleGit from 'simple-git';
 import * as fs from "fs";
 
 suite('GitService Tests', () => {
@@ -17,7 +16,6 @@ suite('GitService Tests', () => {
             { uri: vscode.Uri.file("/fake/workspace") } as vscode.WorkspaceFolder,
         ]);
     
-        console.log("Stubbed workspaceFolders:", vscode.workspace.workspaceFolders);
     
         // Create repo directory
         const testRepoPath = "/fake/workspace/tracktonic";
@@ -51,9 +49,6 @@ suite('GitService Tests', () => {
         await (gitService as any).initialize();
 
         (gitService as any).git = gitMock; 
-    
-        console.log("Replaced GitService.git with mock!");
-        console.log("DEBUG: gitService.git.log exists?", typeof (gitService as any).git.log);
     });
     
 

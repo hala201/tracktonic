@@ -5,7 +5,7 @@ import { GitService } from './services/gitService';
 
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log("TrackTonic extension activated, starting auto-commit...");
+	vscode.window.showInformationMessage("TrackTonic is activated!");
     const gitService = new GitService(context);
     const intervalMs = gitService.getCommitInterval();
     gitService.startAutoCommit(intervalMs);

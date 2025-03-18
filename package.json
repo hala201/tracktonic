@@ -29,7 +29,7 @@
             "properties": {
                 "tracktonic.commitInterval": {
                     "type": "number",
-                    "default": 1800000,
+                    "default": 30000,
                     "minimum": 30000,
                     "description": "Interval (in milliseconds) between automatic commits. Default is 30 minutes (1,800,000 ms)."
                 }
