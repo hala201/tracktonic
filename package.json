@@ -2,12 +2,13 @@
     "name": "tracktonic",
     "displayName": "TrackTonic",
     "description": "vscode productivity monitor",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "HalaMurad",
     "repository": {
     "type": "git",
     "url": "git+https://github.com/hala201/tracktonic"
     },
+    "icon": "icon.jpg",
     "engines": {
         "vscode": "^1.97.0"
     },
