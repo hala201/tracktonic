@@ -1,71 +1,78 @@
-# tracktonic README
+# TrackTonic - Productivity Monitor for VSCode
 
-This is the README for your extension "tracktonic". After writing up a brief description, we recommend including the following sections.
+## Overview
+TrackTonic is a **VSCode extension** that automatically tracks and logs your coding activity by committing and pushing changes from all projects to a designated GitHub repository (`tracktonic`) every **30 minutes**.
+
+This ensures you maintain a continuous activity log of your development sessions, helping with **productivity tracking** and **workflow analysis**.
 
 ## Features
+- **Automatic Git commits** to a designated GitHub Repo every set interval, 30 minutes by default.
+- **Secure authentication** with GitHub.
+- **Multi-repository support** – works across all opened projects.
+- **Intelligent commit messages** generated automatically.
+- **Configurable commit intervals**.
+- **Auto-creation of the `tracktonic` GitHub repository** if it doesn’t exist.
+- **On-demand commit control** via VSCode commands.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Installation
+1. Open **VSCode**.
+2. Go to **Extensions** (`Ctrl+Shift+X` / `Cmd+Shift+X` on macOS).
+3. Search for `TrackTonic` and click **Install**.
+4. Restart VSCode (if needed).
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
+Once installed, follow these steps:
 
-\!\[feature X\]\(images/feature-x.png\)
+1. **Initialize TrackTonic**:
+   - Open any project in VSCode.
+   - The extension will prompt you to choose a folder to store the `tracktonic` repository.
+   - It will automatically create and initialize the repository.
+   
+2. **Authenticate with GitHub**:
+   - When prompted, sign in with your GitHub account.
+   - Your GitHub username will be securely stored.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+3. **Start Auto-Commits**:
+   - The extension will automatically commit and push changes every **30 minutes**.
+   - You can configure the interval in VSCode settings (`tracktonic.commitInterval`).
+   
+4. **Check Activity Log**:
+   - Visit your GitHub repository (`https://github.com/YOUR_USERNAME/tracktonic`) to view all commits.
 
-## Requirements
+## Commands
+TrackTonic provides several commands that you can run in the **VSCode Command Palette** (`Ctrl+Shift+P` / `Cmd+Shift+P` on macOS):
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+| Command | Description |
+|---------|-------------|
+| `TrackTonic: Start Auto-Commit` | Start tracking and committing changes automatically. |
+| `TrackTonic: Stop Auto-Commit` | Pause automatic commits. |
 
-## Extension Settings
+## ⚙️ Configuration
+You can modify TrackTonic settings in **VSCode Settings (`settings.json`)**:
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+```json
+{
+  "tracktonic.commitInterval": 1800000 // Default: 30 minutes (in milliseconds)
+}
+```
 
-For example:
+## Troubleshooting
+**1. Authentication Issues**
+   - Ensure you have the correct permissions (`repo` access).
+   
+**2. No Changes Being Tracked**
+   - Ensure you have changes in your project.
+   - Restart VSCode.
+   
+**3. GitHub Repository Not Found**
+   - The extension will attempt to create the repo if it doesn’t exist.
+   - You can manually create a `tracktonic` repository on GitHub.
 
-This extension contributes the following settings:
+## Contributing
+Contributions are welcome! Open an issue or submit a pull request on GitHub.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+## 📜 License
+This project is licensed under the **MIT License**.
 
 ---
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Enjoy coding with **TrackTonic** and stay productive! 
